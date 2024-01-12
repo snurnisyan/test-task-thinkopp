@@ -50,10 +50,14 @@ export default function Slider(): ReactElement {
   const isDisabled = (direction: string) => {
     if (slider.current === null) return true;
     if (direction === 'prev') {
+      console.log('isDisabled prev', slider.current.scrollLeft <= 0);
+      console.log('isDisabled slider.current.scrollLeft', slider.current.scrollLeft);
       return slider.current.scrollLeft <= 0;
     }
 
     if (direction === 'next') {
+      console.log('isDisabled next', slider.current.scrollLeft >= maxScrollWidth.current);
+      console.log('isDisabled slider.current.scrollLeft=', slider.current.scrollLeft, ' maxScrollWidth.current=', maxScrollWidth.current);
       return slider.current.scrollLeft >= maxScrollWidth.current;
     }
     return false;

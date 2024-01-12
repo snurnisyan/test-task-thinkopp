@@ -17,6 +17,7 @@ export default function SliderNav({moveNext, movePrev, isDisabled, scrollRef}: T
   const [nextHover, setNextHover] = useState<boolean>(false);
   const [isPrevDisabled, setPrevDisabled] = useState<boolean>(false);
   const [isNextDisabled, setNextDisabled] = useState<boolean>(false);
+  const scrollRefWidth = scrollRef.current?.offsetWidth;
 
   const onScrollView = useCallback(() => {
     setPrevDisabled(isDisabled('prev'));
@@ -25,7 +26,7 @@ export default function SliderNav({moveNext, movePrev, isDisabled, scrollRef}: T
 
   useEffect(() => {
     onScrollView();
-  }, []);
+  }, [scrollRefWidth]);
 
   useEffect(() => {
     if (scrollRef == null || scrollRef.current === null) return;
@@ -49,6 +50,7 @@ export default function SliderNav({moveNext, movePrev, isDisabled, scrollRef}: T
   return (
     <section className={styles.navSection}>
       <button
+        type='button'
         className={styles.icon}
         onMouseEnter={onPreviousMouseEnter}
         onMouseLeave={onPreviousMouseLeave}
@@ -58,6 +60,7 @@ export default function SliderNav({moveNext, movePrev, isDisabled, scrollRef}: T
         { previousHover ? <PreviousSlideIconHover /> : <PreviousSlideIcon /> }
       </button>
       <button
+        type='button'
         className={styles.icon}
         onMouseEnter={onNextMouseEnter}
         onMouseLeave={onNextMouseLeave}

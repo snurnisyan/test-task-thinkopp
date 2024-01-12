@@ -28,8 +28,9 @@
 
 
 ```
+
 // clone repo
-git clone https://github.com/Hackathon-Lenta-Team2/frontend
+git clone https://github.com/snurnisyan/test-task-thinkopp
 
 // go to dir
 cd frontend
