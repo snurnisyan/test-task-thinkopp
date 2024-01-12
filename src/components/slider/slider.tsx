@@ -56,7 +56,7 @@ export default function Slider(): ReactElement {
     if (direction === 'next') {
       return slider.current.scrollLeft >= maxScrollWidth.current;
     }
-    return true;
+    return false;
   };
 
   return (
