@@ -66,3 +66,10 @@
   display: block;
   padding-bottom: 50%;
 }
+
+@media screen and (max-width: 1200px) {
+  .cardContainer {
+    width: calc(344px * 0.8);
+    height: calc(344px * 0.8);
+  }
+}

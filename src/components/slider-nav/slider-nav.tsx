@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {RefObject, useCallback, useEffect, useState} from "react";
 import PreviousSlideIcon from '../../images/previous-icon.svg?react';
 import NextSlideIcon from '../../images/next-icon.svg?react';
 import PreviousSlideIconHover from '../../images/previous-icon-hover.svg?react';
@@ -8,11 +8,30 @@ import styles from './slider-nav.module.css';
 type TSliderNavProps = {
   moveNext: () => void,
   movePrev: () => void,
-  isDisabled: (direction: string) => boolean
+  isDisabled: (direction: string) => boolean,
+  scrollRef: RefObject<HTMLDivElement>,
 }
-export default function SliderNav({moveNext, movePrev, isDisabled}: TSliderNavProps) {
-  const [previousHover, setPreviousHover] = useState(false);
-  const [nextHover, setNextHover] = useState(false);
+
+export default function SliderNav({moveNext, movePrev, isDisabled, scrollRef}: TSliderNavProps) {
+  const [previousHover, setPreviousHover] = useState<boolean>(false);
+  const [nextHover, setNextHover] = useState<boolean>(false);
+  const [isPrevDisabled, setPrevDisabled] = useState<boolean>(false);
+  const [isNextDisabled, setNextDisabled] = useState<boolean>(false);
+
+  const onScrollView = useCallback(() => {
+    setPrevDisabled(isDisabled('prev'));
+    setNextDisabled(isDisabled('next'));
+  }, []);
+
+  useEffect(() => {
+    onScrollView();
+  }, []);
+
+  useEffect(() => {
+    if (scrollRef == null || scrollRef.current === null) return;
+    scrollRef.current.addEventListener('scroll', onScrollView);
+  }, [scrollRef]);
+
   const onPreviousMouseEnter = () => {
     setPreviousHover(true);
   }
@@ -34,7 +53,7 @@ export default function SliderNav({moveNext, movePrev, isDisabled}: TSliderNavPr
         onMouseEnter={onPreviousMouseEnter}
         onMouseLeave={onPreviousMouseLeave}
         onClick={movePrev}
-        disabled={isDisabled('prev')}
+        disabled={isPrevDisabled}
       >
         { previousHover ? <PreviousSlideIconHover /> : <PreviousSlideIcon /> }
       </button>
@@ -43,7 +62,7 @@ export default function SliderNav({moveNext, movePrev, isDisabled}: TSliderNavPr
         onMouseEnter={onNextMouseEnter}
         onMouseLeave={onNextMouseLeave}
         onClick={moveNext}
-        disabled={isDisabled('next')}
+        disabled={isNextDisabled}
       >
         { nextHover ? <NextSlideIconHover /> : <NextSlideIcon /> }
       </button>

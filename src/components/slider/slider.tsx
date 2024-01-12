@@ -1,6 +1,6 @@
 import Card from "../card/card";
 import data from "../../utils/mockData";
-import {ReactElement, useEffect, useLayoutEffect, useRef, useState} from "react";
+import {ReactElement, useEffect, useRef, useState} from "react";
 import styles from './slider.module.css';
 import {borderRules} from "../../utils/constants";
 import {TBorderType} from "../../utils/types";
@@ -8,31 +8,27 @@ import SliderNav from "../slider-nav/slider-nav";
 
 export default function Slider(): ReactElement {
   const borderTypes = Object.keys(borderRules) as TBorderType[];
-  const [bordersForRender, setBorders] = useState([] as TBorderType[]);
-
-  const maxScrollWidth = useRef(0);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [bordersForRender, setBorders] = useState<TBorderType[]>([] as TBorderType[]);
+  const maxScrollWidth = useRef<number>(0);
   const slider = useRef<HTMLDivElement>(null);
-  const minScrollWidth = 344;
 
-  console.log('currentIndex=', currentIndex);
   const movePrev = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex((prevState) => prevState - 1);
-    }
+    if (slider.current === null) return;
+    let newScroll = Math.round(
+      (slider.current.scrollLeft - slider.current.offsetWidth)/slider.current.offsetWidth
+    )*slider.current.offsetWidth;
+    newScroll = Math.max(newScroll, 0);
+    slider.current.scrollLeft = newScroll;
   };
 
   const moveNext = () => {
-    if (slider.current !== null && slider.current.offsetWidth * currentIndex <= maxScrollWidth.current) {
-      setCurrentIndex((prevState) => prevState + 1);
-    }
+    if (slider.current === null) return;
+    let newScroll = Math.round(
+      (slider.current.scrollLeft + slider.current.offsetWidth)/slider.current.offsetWidth
+    )*slider.current.offsetWidth;
+    newScroll = Math.min(newScroll, maxScrollWidth.current);
+    slider.current.scrollLeft = newScroll;
   };
-
-  useEffect(() => {
-    if (slider !== null && slider.current !== null) {
-      slider.current.scrollLeft = slider.current.offsetWidth * currentIndex;
-    }
-  }, [currentIndex]);
 
   useEffect(() => {
     maxScrollWidth.current = slider.current
@@ -51,38 +47,22 @@ export default function Slider(): ReactElement {
     setBorders(bordersArray);
   }, [borderRules]);
 
-  // const onViewScroll = () => {
-  //   if (slider !== null && slider.current !== null) {
-  //     let newIndex = currentIndex;
-  //     if (slider.current.scrollLeft + slider.current.offsetWidth >= maxScrollWidth.current) {
-  //       newIndex = 1;
-  //     }
-  //
-  //     // const newIndex = slider.current.scrollLeft/slider.current.offsetWidth;
-  //     console.log('slider.current.scrollLeft=', slider.current.scrollLeft);
-  //     console.log('slider.current.offsetWidth=', slider.current.offsetWidth);
-  //     console.log('newIndex=', newIndex);
-  //     setCurrentIndex(newIndex);
-  //   }
-  // };
-
   const isDisabled = (direction: string) => {
+    if (slider.current === null) return true;
     if (direction === 'prev') {
-      return currentIndex <= 0;
+      return slider.current.scrollLeft <= 0;
     }
 
-    if (direction === 'next' && slider.current !== null) {
-      return slider.current.offsetWidth * currentIndex >= maxScrollWidth.current;
+    if (direction === 'next') {
+      return slider.current.scrollLeft >= maxScrollWidth.current;
     }
-
-    return false;
+    return true;
   };
 
   return (
     <main className={styles.slider}>
       <div className={styles.wrapper}>
         <section className={styles.cardSection} ref={slider}>
-          {/*onScroll={onViewScroll}*/}
           {data.map((card, index) => {
             let isLong = false;
             if (card.title.length > 35) {
@@ -92,7 +72,7 @@ export default function Slider(): ReactElement {
           })}
         </section>
       </div>
-      <SliderNav movePrev={movePrev} moveNext={moveNext} isDisabled={isDisabled} />
+      <SliderNav movePrev={movePrev} moveNext={moveNext} isDisabled={isDisabled} scrollRef={slider} />
     </main>
   )
 }
