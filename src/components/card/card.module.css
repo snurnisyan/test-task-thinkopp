@@ -1,7 +1,20 @@
 .cardContainer {
   display: flex;
   flex-direction: column;
-  max-width: 344px;
+  width: 344px;
+  height: 344px;
+  flex-shrink: 0;
+}
+
+.imageContainer {
+  position: relative;
+  width: 100%;
+}
+
+.imageContainer:after {
+  content: "";
+  display: block;
+  padding-bottom: 100%;
 }
 
 .titleContainer {
@@ -14,6 +27,11 @@
   color: #525C7A;
   font-weight: 600;
   margin: 0;
+  cursor: pointer;
+}
+
+.title:active {
+  color: #4FBA67;
 }
 
 .data {
@@ -24,11 +42,27 @@
 }
 
 .image {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  aspect-ratio: 1 / 1;
+  height: 100%;
   object-fit: cover;
   object-position: center;
-/*  border-radius: 0 100px; */
-/*  border-radius: 100px 0; */
-/*  border-radius: 100px; */
+}
+
+.longCard {
+  width: 688px;
+  height: 344px;
+}
+
+.longImageContainer {
+  position: relative;
+  width: 100%;
+}
+
+.longImageContainer:after {
+  content: "";
+  display: block;
+  padding-bottom: 50%;
 }

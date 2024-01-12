@@ -1,0 +1,17 @@
+.navSection {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding-top: 12px;
+}
+
+.icon {
+  padding: 12px 0;
+  border: 0;
+  cursor: pointer;
+  background-color: transparent;
+}
+
+.icon:disabled {
+  cursor: auto;
+}
